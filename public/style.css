@@ -13,7 +13,7 @@
   --hot-bg: #fcebea;
   --over-ink: #ffffff;
   --cell: #e6e3dc;
-  --cell-lived: #4a4842;
+  --cell-lived: #c9c2b4; /* 過ぎた週。黒く塗らない（「失った」に見えないように）。主役はやったことの橙 */
   --cell-done: #d9822b;
   --radius: 12px;
   color-scheme: light;
@@ -34,7 +34,7 @@
     --hot-bg: #3a1917;
     --over-ink: #1a0b0a;
     --cell: #2c2b27;
-    --cell-lived: #9c978c;
+    --cell-lived: #4e4b44;
     --cell-done: #f0a53a;
     color-scheme: dark;
   }
@@ -54,7 +54,7 @@
   --hot-bg: #3a1917;
   --over-ink: #1a0b0a;
   --cell: #2c2b27;
-  --cell-lived: #9c978c;
+  --cell-lived: #4e4b44;
   --cell-done: #f0a53a;
   color-scheme: dark;
 }
