@@ -66,6 +66,10 @@ Cloudflare D1（SQLite）に2つのテーブルを持つ。定義の正は `src/
 
 方式②（Cloudflare Workers + Hono + D1 + Drizzle、Access は Terraform）。詳細は [README](../README.md)。
 
+![todo の構成](diagrams/todo.drawio.svg)
+
+図は draw.io で編集できる（VSCode の拡張 Draw.io Integration で開く）。同じことを短く書くと：
+
 ```
 閲覧者 ──GET /, /api/data───────────────▶ Worker ──▶ D1
 本人   ──/admin, /admin/api/...───────▶ Access ──▶ Worker（JWT を検証）──▶ D1
