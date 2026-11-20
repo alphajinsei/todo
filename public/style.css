@@ -153,11 +153,11 @@ section { margin-top: 28px; }
 .task.openable.u-hot:hover, .task.openable.u-today:hover, .task.openable.u-over:hover { border-color: var(--hot); }
 .task .memo { cursor: auto; }
 .twisty {
-  flex: none; width: 16px; height: 20px; padding: 0; margin: 0 -4px 0 -2px; border: 0; background: none;
+  flex: none; align-self: flex-start; width: 16px; height: 26px; padding: 0; margin: 1px -4px 0 -2px; border: 0; background: none;
   color: var(--ink-2); font-size: 13px; cursor: pointer; transition: transform .15s ease;
 }
 .task.open .twisty { transform: rotate(90deg); }
-.memo-icon { display: inline-flex; color: var(--ink-3); margin-left: -2px; }
+.memo-icon { display: inline-block; color: var(--ink-3); margin-left: 2px; vertical-align: 1px; }
 .btn.more { padding: 3px 8px; font-weight: 700; letter-spacing: .05em; }
 .done-btn { font-weight: 600; }
 .done-btn:hover { background: var(--cell-done); border-color: var(--cell-done); color: #fff; }
@@ -177,9 +177,18 @@ section { margin-top: 28px; }
 .memo textarea:focus { background: var(--surface); }
 .memo-text { white-space: pre-wrap; border-left: 2px solid var(--line); }
 /* 並べ替えのつまみ */
-.grip { display: flex; align-items: center; align-self: stretch; padding: 0 3px; margin-left: -5px; color: var(--ink-3); cursor: grab; touch-action: none; opacity: .6; }
-.grip:hover { opacity: 1; }
-.task.dragging { position: relative; z-index: 1; box-shadow: 0 6px 18px rgb(0 0 0 / .18); cursor: grabbing; }
+/* つまみはカードの左の外に置く。マウスのある端末では、カードにマウスを乗せたときだけ出す（Notion・Todoist と同じ）。
+   スマホなどマウスのない端末では、薄く常に出しておく（左の余白 16px に収まる） */
+.task { position: relative; }
+.grip {
+  position: absolute; left: -20px; top: 0; bottom: 0; width: 16px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink-3); cursor: grab; touch-action: none; opacity: 0; transition: opacity .12s;
+}
+.task:hover .grip, .task.dragging .grip { opacity: .7; }
+.grip:hover, .task.dragging .grip { opacity: 1; color: var(--ink-2); }
+@media (hover: none) { .grip { opacity: .45; } }
+.task.dragging { z-index: 1; box-shadow: 0 6px 18px rgb(0 0 0 / .18); cursor: grabbing; }
 .memo-err { font-size: 12px; color: var(--hot); }
 .due { font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; white-space: nowrap; }
 .due.d-calm { color: var(--ink-2); background: var(--cell); }

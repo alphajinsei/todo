@@ -164,12 +164,11 @@ function taskRow(t) {
   return `<li class="task${d ? ` u-${d.cls}` : ''}${openable ? ' openable' : ''}${isOpen ? ' open' : ''}" data-task="${t.id}">
     <div class="task-line">
       ${ed ? `<span class="grip" data-grip title="ドラッグで並べ替え" aria-hidden="true">${GRIP}</span>` : ''}
+      ${openable
+        ? `<button class="twisty" data-act="memo" data-id="${t.id}" aria-expanded="${isOpen}" aria-label="メモを${isOpen ? '閉じる' : '開く'}">▸</button>`
+        : '<span class="twisty" aria-hidden="true"></span>'}
       <span class="task-main">
-        ${openable
-          ? `<button class="twisty" data-act="memo" data-id="${t.id}" aria-expanded="${isOpen}" aria-label="メモを${isOpen ? '閉じる' : '開く'}">▸</button>`
-          : '<span class="twisty" aria-hidden="true"></span>'}
-        <span class="task-title">${esc(t.title)}</span>
-        ${hasMemo ? `<span class="memo-icon" title="メモあり" aria-label="メモあり">${LINES}</span>` : ''}
+        <span class="task-title">${esc(t.title)}${hasMemo ? ` <span class="memo-icon" title="メモあり" aria-label="メモあり">${LINES}</span>` : ''}</span>
         ${d ? `<span class="due d-${d.cls}">${d.text}</span>` : ''}
       </span>
       <span class="task-ops">
