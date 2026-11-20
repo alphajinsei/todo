@@ -40,6 +40,6 @@
 		// Access の JWT の検証に使う。ACCESS_AUD は infra/terraform の output（access_aud）を入れる
 		// 空のままだと書き込みの API はすべて 403 になる（閉じる側に倒す）
 		"ACCESS_TEAM_DOMAIN": "https://alphajinsei.cloudflareaccess.com",
-		"ACCESS_AUD": ""
+		"ACCESS_AUD": "58448ae0c38b21f6cc0cdff31975ed5b48dc10967b5552b2a9e4aec783b7932f"
 	}
 }
