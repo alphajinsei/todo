@@ -252,8 +252,7 @@ function renderLife() {
       if (w === COLS - 1 && n > COLS) weeks.push(addDays(start, COLS * 7));
       const first = weeks[0], last = weeks[weeks.length - 1];
       const cls = [];
-      if (weeks.includes(thisWeek)) cls.push('now');
-      else if (last < thisWeek) cls.push('lived');
+      if (first <= thisWeek) cls.push('lived'); // 今週も、始まっている週として塗る
       const recs = weeks.flatMap((k) => recAt.get(k) || []);
       // やったことの量で緑の濃さを変える（1件／2件／3〜4件／5件以上）
       if (recs.length) cls.push(`d${recs.length >= 5 ? 4 : recs.length >= 3 ? 3 : recs.length}`);
