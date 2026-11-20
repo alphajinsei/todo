@@ -122,7 +122,14 @@ function renderTasks() {
     // 手で並べた順（sort）。同じ値どうしは、期限のあるものを近い順に先に、期限のないものは登録順で後ろに
     .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || (a.deadline && b.deadline ? a.deadline.localeCompare(b.deadline) : a.deadline ? -1 : b.deadline ? 1 : a.created.localeCompare(b.created)));
   $('#task-count').textContent = open.length;
-  $('#tasks').innerHTML = open.length ? open.map(taskRow).join('') : '<li class="empty">タスクはありません。</li>';
+  // 「いま」の線：上に置いたものが、いま手をつけていること。見た目の区切りだけで、上でも下でもできることは同じ。
+  // 新しいタスクは線のすぐ下に入る。編集モードでは、上が空でも線を出しておく（ドラッグで置く先になるので）
+  const now = open.filter((t) => t.focus), rest = open.filter((t) => !t.focus);
+  const line = `<li class="now-line" data-line>${now.length ? '<span>↑ いま</span>' : '<span>いま手をつけるものを、この線の上へ</span>'}</li>`;
+  const showLine = now.length || (state.editable && open.length);
+  $('#tasks').innerHTML = open.length
+    ? now.map(taskRow).join('') + (showLine ? line : '') + rest.map(taskRow).join('')
+    : '<li class="empty">タスクはありません。</li>';
   document.querySelectorAll('#tasks textarea[data-memo]').forEach(autosize);
 
   // メモをまとめて開く・閉じる（書き込みのあるメモが対象）
@@ -466,14 +473,15 @@ document.addEventListener('submit', async (e) => {
 let drag = null;
 const SLIDE = 'transform .16s ease';
 const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-const taskOrder = () => [...document.querySelectorAll('#tasks > .task')].map((li) => li.dataset.task);
+// 一覧の並び（タスクの id と、「いま」の線の位置を '|' で）
+const listOrder = () => [...document.querySelectorAll('#tasks > .task, #tasks > [data-line]')].map((li) => li.dataset.task ?? '|');
 document.addEventListener('pointerdown', (e) => {
   const grip = e.target.closest?.('[data-grip]');
   if (!grip || !state.editable || drag) return;
   e.preventDefault();
   document.activeElement?.blur?.(); // 書きかけのメモはここで保存される
   const li = grip.closest('.task');
-  drag = { li, before: taskOrder().join(), startPageY: e.pageY, startTop: li.offsetTop, clientY: e.clientY, raf: 0 };
+  drag = { li, before: listOrder().join(), startPageY: e.pageY, startTop: li.offsetTop, clientY: e.clientY, raf: 0 };
   li.classList.add('dragging');
   li.style.transition = 'none';
   grip.setPointerCapture(e.pointerId);
@@ -490,7 +498,7 @@ function dragFrame() {
   const center = drag.startTop + moved + li.offsetHeight / 2; // 掴んだカードの中心（ページ上）
   // 入る場所：ほかのカードのうち、中心が掴んだカードの中心より上にあるものの数
   const list = $('#tasks');
-  const others = [...list.children].filter((x) => x !== li && x.classList.contains('task'));
+  const others = [...list.children].filter((x) => x !== li && (x.classList.contains('task') || x.hasAttribute('data-line')));
   const index = others.filter((x) => x.offsetTop + x.offsetHeight / 2 < center).length;
   if (others[index] !== li.nextElementSibling || (index === others.length && list.lastElementChild !== li)) {
     const first = new Map(others.map((x) => [x, x.getBoundingClientRect().top]));
@@ -520,11 +528,15 @@ async function endDrag() {
   li.style.transition = reduceMotion() ? 'none' : SLIDE;
   li.style.transform = '';
   setTimeout(() => { li.classList.remove('dragging'); li.style.transition = ''; }, 170);
-  const ids = taskOrder();
-  if (ids.join() === before) return;
-  ids.forEach((id, i) => { const t = findTask(id); if (t) t.sort = i; });
-  const err = await send('POST', '/tasks/order', { ids }, '', { quiet: true });
-  if (err) { alert(err); load(); }
+  const order = listOrder();
+  if (order.join() === before) return;
+  const ids = order.filter((x) => x !== '|');
+  const focus = Math.max(order.indexOf('|'), 0); // 線より上にあるタスクの数
+  ids.forEach((id, i) => { const t = findTask(id); if (t) { t.sort = i; t.focus = i < focus; } });
+  const err = await send('POST', '/tasks/order', { ids, focus }, '', { quiet: true });
+  if (err) { alert(err); load(); return; }
+  // 線の上が空になった・空でなくなったときは、線の文言が変わるので描き直す（滑って収まるのを待ってから）
+  if ((focus === 0) !== (before.split(',').indexOf('|') <= 0)) setTimeout(renderTasks, 180);
 }
 document.addEventListener('pointerup', endDrag);
 document.addEventListener('pointercancel', endDrag);

@@ -15,6 +15,13 @@
       "when": 1795148411907,
       "tag": "0001_task_sort",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1795197373574,
+      "tag": "0002_task_focus",
+      "breakpoints": true
     }
   ]
 }

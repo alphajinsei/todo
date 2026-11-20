@@ -39,8 +39,8 @@ admin.use(requireAccess);
 
 admin.post('/tasks', async (c) => {
 	const b = await readBody(c);
-	// 一番上に入れる（いまの一番小さい sort より1つ小さく）
-	const top = await c.env.DB.prepare(`SELECT COALESCE(MIN(sort), 0) - 1 AS s FROM tasks WHERE status = 'open'`).first<{ s: number }>();
+	// 「いま」の線のすぐ下に入れる（線の下のいまの一番小さい sort より1つ小さく）。線の上は自分で選んだものだけにしておく
+	const top = await c.env.DB.prepare(`SELECT COALESCE(MIN(sort), 0) - 1 AS s FROM tasks WHERE status = 'open' AND focus = 0`).first<{ s: number }>();
 	await drizzle(c.env.DB)
 		.insert(tasks)
 		.values({
@@ -54,15 +54,17 @@ admin.post('/tasks', async (c) => {
 	return c.json(await loadDoc(c.env), 201);
 });
 
-// 並べ替え。上から順の id の並びを受け取り、その順に sort を振り直す
+// 並べ替え。上から順の id の並びと、そのうち「いま」の線より上にある数（focus）を受け取り、その順に sort を振り直す
 admin.post('/tasks/order', async (c) => {
 	const b = await readBody(c);
 	const ids = b.ids;
 	if (!Array.isArray(ids) || !ids.length || ids.length > 1000 || !ids.every((x) => typeof x === 'string'))
 		throw new RuleError('並び順（ids）は id の配列で送ってください');
 	if (new Set(ids).size !== ids.length) throw new RuleError('同じ id が重なっています');
+	const focus = b.focus ?? 0;
+	if (!Number.isInteger(focus) || (focus as number) < 0 || (focus as number) > ids.length) throw new RuleError('線より上の数（focus）が正しくありません');
 	const DB = c.env.DB;
-	await DB.batch(ids.map((id, i) => DB.prepare('UPDATE tasks SET sort = ?2 WHERE id = ?1').bind(id, i)));
+	await DB.batch(ids.map((id, i) => DB.prepare('UPDATE tasks SET sort = ?2, focus = ?3 WHERE id = ?1').bind(id, i, i < (focus as number) ? 1 : 0)));
 	return c.json(await loadDoc(c.env));
 });
 

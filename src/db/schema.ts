@@ -21,6 +21,8 @@ export const tasks = sqliteTable(
 		done: text('done'),
 		// 並び順（小さいほど上）。画面でドラッグして変える。新しいタスクは一番上に入る
 		sort: integer('sort').notNull().default(0),
+		// 「いま」の線より上か（1：いま手をつけていること）。見た目の区切りだけで、操作は何も変わらない
+		focus: integer('focus', { mode: 'boolean' }).notNull().default(false),
 	},
 	(t) => [index('tasks_status_idx').on(t.status)],
 );
