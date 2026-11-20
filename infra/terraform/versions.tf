@@ -6,6 +6,11 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "~> 5.28"
     }
+    # auth の client_secret を作る（auth-idp.tf）
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.7"
+    }
   }
 
   backend "s3" {

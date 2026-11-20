@@ -55,7 +55,7 @@
 | `migrations/` | drizzle-kit が作ったマイグレーション。手で書かない |
 | `public/` | 画面（素の HTML / CSS / JS、ビルドなし）。URL が `/admin` なら編集モード |
 | `seed/`、`scripts/seed.mjs` | 手元の D1 に流す見本のデータ（旧形式の JSON）と、それを SQL にするスクリプト |
-| `infra/terraform/` | Access。`tf.sh` が `~/claude-sandbox/infra/.secrets/` の鍵を読んで terraform を実行する。state は R2 の `tfstate` バケットの `todo/terraform.tfstate` |
+| `infra/terraform/` | Access と、そのログインの選択肢の auth（`auth-idp.tf`）。`tf.sh` が `~/claude-sandbox/infra/.secrets/` の鍵を読んで terraform を実行する。state は R2 の `tfstate` バケットの `todo/terraform.tfstate` |
 
 ## 3. 手元での開発
 
@@ -95,6 +95,16 @@ cp owner.auto.tfvars.example owner.auto.tfvars   # 初回だけ。編集を許�
 4. 確かめる：`/` と `/api/data` はログインなしで 200、`/admin` は `cloudflareaccess.com` へ 302、ログイン後に `/admin` から追加できる
 
 `ACCESS_AUD` が空のままデプロイしても、閲覧はできて書き込みは 403 になるだけ（安全側）。
+
+### Access のログインに auth（自作の IdP）を足す
+
+Access のログイン画面の選択肢は、メールのワンタイムコードと「auth.alphajinsei.com」（[auth](https://github.com/alphajinsei/auth) のパスキーなど）の2つ。auth の側の流れと決めごとは、auth の `docs/steps/9-cloudflare-access.md`。
+
+1. auth の自分のアカウントに、`owner.auto.tfvars` のどれかと同じメールアドレスを入れておく（auth の `admin set-email`）
+2. `infra/terraform` で `./tf.sh apply`：IdP（`infra/terraform/auth-idp.tf`）と client_secret ができる
+3. `./tf.sh output auth_idp_redirect_url` が `scripts/register-auth-client.sh` の `REDIRECT_URI` と同じことを確かめる
+4. `bash scripts/register-auth-client.sh`：auth に client（`cloudflare-access`）を登録する。secret は ssh の標準入力で流し込み、画面に出さない
+5. `/admin` を開き、「auth.alphajinsei.com」でログインする
 
 ## 5. このサンプルから新しいサービスを始める
 
