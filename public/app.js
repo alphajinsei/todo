@@ -155,7 +155,7 @@ function taskRow(t) {
   const hasMemo = !!t.memo;
   const memo = isOpen
     ? `<div class="memo">${ed
-        ? `<textarea data-memo="${t.id}" rows="1" placeholder="メモ（書き方は自由。- [ ] で箇条書きなど）">${esc(t.memo)}</textarea><div class="memo-err" data-memo-status="${t.id}" hidden></div>`
+        ? `<textarea data-memo="${t.id}" rows="1" placeholder="メモ">${esc(t.memo)}</textarea><div class="memo-err" data-memo-status="${t.id}" hidden></div>`
         : `<div class="memo-text">${esc(t.memo)}</div>`}</div>`
     : '';
   // メモはカードのどこを押しても開閉する（ボタンや入力欄を除く）。開閉は左の三角で、書き込みがあることはタイトルの右の
