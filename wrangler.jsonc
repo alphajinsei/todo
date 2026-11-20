@@ -28,7 +28,7 @@
 			"binding": "DB",
 			"database_name": "todo-db",
 			// npx wrangler d1 create todo-db --location apac の出力で置き換える（手元の開発はこのままで動く）
-			"database_id": "00000000-0000-0000-0000-000000000000"
+			"database_id": "aa532c65-5c15-4c2d-9061-7d66558eba71"
 		}
 	],
 	"vars": {
