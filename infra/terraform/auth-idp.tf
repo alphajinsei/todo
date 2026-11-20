@@ -31,6 +31,9 @@ resource "cloudflare_zero_trust_access_identity_provider" "auth" {
     # email：ID トークンに email を入れてもらい、ポリシー（owner_emails）と照らす。auth は email scope のときだけ email を出す
     scopes           = ["openid", "email", "profile"]
     email_claim_name = "email"
+    # ID トークンの中から、email と amr のほかに取っておくクレーム。Access の利用者の情報の oidc_fields に入り、
+    # 管理画面の Test で見える。ポリシーの条件（OIDC Claim）にも使える。学習のために、auth が出す利用者の項目を並べた
+    claims = ["sub", "preferred_username", "email_verified", "auth_time"]
   }
 }
 
