@@ -236,11 +236,6 @@ function renderLife() {
     const k = mondayOf(r.date);
     recAt.set(k, [...(recAt.get(k) || []), r.text]);
   }
-  const dueAt = new Map();
-  for (const t of state.doc.tasks.filter((t) => t.status === 'open' && t.deadline)) {
-    const k = mondayOf(t.deadline);
-    dueAt.set(k, [...(dueAt.get(k) || []), t.title]);
-  }
 
   // SVG で描く。1マス10、間隔2、10年ごとに少し空ける。左端は年齢ラベル。
   // 1行は52マスにそろえる。53週ある歳（5〜6年に1回）は、最後のマスに2週ぶんをまとめる
@@ -259,12 +254,11 @@ function renderLife() {
       const cls = [];
       if (weeks.includes(thisWeek)) cls.push('now');
       else if (last < thisWeek) cls.push('lived');
-      if (weeks.some((k) => recAt.has(k))) cls.push('done');
-      if (weeks.some((k) => dueAt.has(k))) cls.push('due');
-      if (weeks.includes(state.week)) cls.push('sel');
       const recs = weeks.flatMap((k) => recAt.get(k) || []);
-      const dues = weeks.flatMap((k) => dueAt.get(k) || []);
-      const tips = [`${fmtMD(first)}〜${fmtMD(addDays(last, 6))}（${age}歳${weeks.length > 1 ? '・2週ぶん' : ''}）`, ...recs.slice(0, 6).map((s) => `・${s}`), ...(recs.length > 6 ? [`ほか${recs.length - 6}件`] : []), ...dues.map((s) => `⏰ ${s}`)];
+      // やったことの量で緑の濃さを変える（1件／2件／3〜4件／5件以上）
+      if (recs.length) cls.push(`d${recs.length >= 5 ? 4 : recs.length >= 3 ? 3 : recs.length}`);
+      if (weeks.includes(state.week)) cls.push('sel');
+      const tips = [`${fmtMD(first)}〜${fmtMD(addDays(last, 6))}（${age}歳${weeks.length > 1 ? '・2週ぶん' : ''}）`, ...recs.slice(0, 6).map((s) => `・${s}`), ...(recs.length > 6 ? [`ほか${recs.length - 6}件`] : [])];
       // 押したときに選ぶ週：今週を含むなら今週、それ以外は最初の週
       const pick = weeks.includes(thisWeek) ? thisWeek : first;
       svg += `<rect data-week="${pick}" x="${LABEL + w * STEP}" y="${y}" width="${CELL}" height="${CELL}" rx="1.5" class="${cls.join(' ')}"><title>${esc(tips.join('\n'))}</title></rect>`;

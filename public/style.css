@@ -13,8 +13,14 @@
   --hot-bg: #fcebea;
   --over-ink: #ffffff;
   --cell: #e6e3dc;
-  --cell-lived: #c9c2b4; /* 過ぎた週。黒く塗らない（「失った」に見えないように）。主役はやったことの橙 */
-  --cell-done: #d9822b;
+  --cell-lived: #a9a397; /* 過ぎた週。真っ黒にはせず、でも過ぎたことは分かる濃さ */
+  --cell-done: #5f9a44;
+  /* やったことの量（週あたり 1件／2件／3〜4件／5件以上）。GitHub の草と同じく、多いほど濃い緑。背景の生成りに合う苔の緑 */
+  --done-1: #c2d9a6;
+  --done-2: #93bd6e;
+  --done-3: #5f9a44;
+  --done-4: #3a7128;
+  --done-bg: #e8f1dc;
   --radius: 12px;
   color-scheme: light;
 }
@@ -34,8 +40,13 @@
     --hot-bg: #3a1917;
     --over-ink: #1a0b0a;
     --cell: #2c2b27;
-    --cell-lived: #4e4b44;
-    --cell-done: #f0a53a;
+    --cell-lived: #57534c;
+    --cell-done: #67a84a;
+    --done-1: #3d5e30;
+    --done-2: #4f8239;
+    --done-3: #67a84a;
+    --done-4: #8fd06a;
+    --done-bg: #1f2e19;
     color-scheme: dark;
   }
 }
@@ -54,8 +65,13 @@
   --hot-bg: #3a1917;
   --over-ink: #1a0b0a;
   --cell: #2c2b27;
-  --cell-lived: #4e4b44;
-  --cell-done: #f0a53a;
+  --cell-lived: #57534c;
+  --cell-done: #67a84a;
+  --done-1: #3d5e30;
+  --done-2: #4f8239;
+  --done-3: #67a84a;
+  --done-4: #8fd06a;
+  --done-bg: #1f2e19;
   color-scheme: dark;
 }
 
@@ -206,8 +222,8 @@ section { margin-top: 28px; }
 #week-title, #h-tasks { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .week-nav, #memo-all { display: flex; gap: 6px; letter-spacing: 0; }
 .rec.flash { animation: flash 2.4s ease-out; }
-@keyframes flash { 0%, 30% { background: var(--warm-bg); } 100% { background: transparent; } }
-@media (prefers-reduced-motion: reduce) { .rec.flash { animation: none; background: var(--warm-bg); } }
+@keyframes flash { 0%, 30% { background: var(--done-bg); } 100% { background: transparent; } }
+@media (prefers-reduced-motion: reduce) { .rec.flash { animation: none; background: var(--done-bg); } }
 .recs { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 2px; }
 .rec { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 4px 2px; border-bottom: 1px dashed var(--line); }
 .rec .when { font-size: 12px; color: var(--ink-3); min-width: 4.5em; font-variant-numeric: tabular-nums; }
@@ -219,22 +235,25 @@ section { margin-top: 28px; }
 .life text { font-size: 11px; fill: var(--ink-3); }
 .life rect { fill: var(--cell); }
 .life rect.lived { fill: var(--cell-lived); }
-.life rect.done { fill: var(--cell-done); }
-.life rect.due { stroke: var(--hot); stroke-width: 1.5; }
+.life rect.d1 { fill: var(--done-1); }
+.life rect.d2 { fill: var(--done-2); }
+.life rect.d3 { fill: var(--done-3); }
+.life rect.d4 { fill: var(--done-4); }
 .life rect { cursor: pointer; }
+/* 今週は色で煽らず、枠で示す。選んでいる週は青い枠（今週を選んでいるときは青が勝つ） */
+.life rect.now { stroke: var(--ink); stroke-width: 2; }
 .life rect.sel { stroke: var(--accent); stroke-width: 2.5; }
-.life rect.now { fill: var(--hot); animation: pulse 1.6s ease-in-out infinite; }
-@keyframes pulse { 50% { opacity: .35; } }
-@media (prefers-reduced-motion: reduce) { .life rect { cursor: pointer; }
-.life rect.sel { stroke: var(--accent); stroke-width: 2.5; }
-.life rect.now { animation: none; } }
 .legend { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 16px; padding: 0; margin: 10px 0 0; font-size: 12px; color: var(--ink-3); }
 .legend li { display: flex; align-items: center; gap: 6px; }
 .cell { display: block; width: 10px; height: 10px; border-radius: 1.5px; background: var(--cell); }
 .cell.lived { background: var(--cell-lived); }
-.cell.done { background: var(--cell-done); }
-.cell.due { box-shadow: inset 0 0 0 1.5px var(--hot); }
-.cell.now { background: var(--hot); }
+.cell.d1 { background: var(--done-1); }
+.cell.d2 { background: var(--done-2); }
+.cell.d3 { background: var(--done-3); }
+.cell.d4 { background: var(--done-4); }
+.cell.now { box-shadow: inset 0 0 0 2px var(--ink); }
+.cell.sel { box-shadow: inset 0 0 0 2px var(--accent); }
+.legend .scale { display: flex; gap: 2px; }
 
 /* dialog */
 dialog {
