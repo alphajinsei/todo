@@ -1,0 +1,45 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "todo",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-11-18",
+	"observability": {
+		"enabled": true
+	},
+	"upload_source_maps": true,
+	"routes": [
+		{
+			"pattern": "todo.alphajinsei.com",
+			"custom_domain": true
+		}
+	],
+	"workers_dev": false,
+	// public/ のファイルはそのまま返す。/admin の画面を返すために Worker からも読む（binding）
+	"assets": {
+		"directory": "./public",
+		"binding": "ASSETS"
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "todo-db",
+			// npx wrangler d1 create todo-db --location apac の出力で置き換える（手元の開発はこのままで動く）
+			"database_id": "00000000-0000-0000-0000-000000000000"
+		}
+	],
+	"vars": {
+		// 人生の週の計算に使う
+		"OWNER_BIRTHDAY": "1997-01-07",
+		"LIFESPAN_YEARS": 90,
+		// 「今日」を決めるタイムゾーン。Worker は UTC で動くので、日付の区切りをここで合わせる
+		"TIME_ZONE": "Asia/Tokyo",
+		// Access の JWT の検証に使う。ACCESS_AUD は infra/terraform の output（access_aud）を入れる
+		// 空のままだと書き込みの API はすべて 403 になる（閉じる側に倒す）
+		"ACCESS_TEAM_DOMAIN": "https://alphajinsei.cloudflareaccess.com",
+		"ACCESS_AUD": ""
+	}
+}

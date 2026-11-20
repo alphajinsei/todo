@@ -1,0 +1,25 @@
+{
+  "name": "todo",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler d1 migrations apply DB --remote && wrangler deploy",
+    "dev": "wrangler dev",
+    "start": "wrangler dev",
+    "cf-typegen": "wrangler types",
+    "check": "tsc --noEmit",
+    "seed:sample": "node scripts/seed.mjs seed/sample.json > seed/sample.sql && wrangler d1 execute DB --local --file seed/sample.sql",
+    "seed:tasks": "node scripts/seed.mjs seed/tasks.json > seed/tasks.sql && wrangler d1 execute DB --local --file seed/tasks.sql"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "drizzle-kit": "^0.31.11",
+    "typescript": "^5.5.2",
+    "wrangler": "^4.156.0"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.4",
+    "hono": "^4.13.16",
+    "jose": "^6.1.0"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "asOf": "2026-11-20",
+  "tasks": [
+    {
+      "id": "ai-karaoke-takase",
+      "title": "カラオケをAIに食わせて ai-karaoke-takase を作る",
+      "deadline": "2026-12-20",
+      "created": "2026-11-01",
+      "memo": "- [x] 歌声を10曲ぶん録音\n- [x] 歌声変換の手法を比較（RVC が手軽そう）\n- [ ] RVC で1曲だけ学習を回す ← 次これ\n- [ ] カラオケ音源と合わせる\n- [ ] 公開ページ\n\nGPU は手元ので足りそう。"
+    },
+    {
+      "id": "kanji-battle",
+      "title": "漢字バトルのゲームを作る",
+      "deadline": "2026-11-18",
+      "created": "2026-11-02",
+      "memo": "ポケモンフュージョンみたいに、遊ぶ人が組み合わせを作って広げられる感じ。\n漢字の部首を合体させる？"
+    },
+    {
+      "id": "physics-study",
+      "title": "物理の勉強を復活させる",
+      "created": "2026-10-20",
+      "memo": "教科書：解析力学から。1章ずつノートにしてブログへ。"
+    },
+    {
+      "id": "cell-zero-trust",
+      "title": "ゼロトラストを細胞ベースで作る",
+      "created": "2026-10-15",
+      "memo": "細胞の機能を洗い出す → ソフトにマッピング → システムを組む\n\n免疫（自己/非自己）＝認証、膜輸送＝通信の許可…"
+    },
+    { "id": "gut-by-ai", "title": "物理の大統一理論をAIにやらせる", "created": "2026-10-30", "memo": "" },
+    { "id": "artificial-life", "title": "生物の遺伝子の性質をソフトで実装して、生き物を作る", "created": "2026-11-05", "memo": "細胞ゼロトラストとつながりそう" },
+    { "id": "auto-trading", "title": "株の自動売買", "created": "2026-11-16", "memo": "kabu-api の続き" },
+    { "id": "next-week-blog", "title": "物理ノート1章をブログに上げる", "deadline": "2026-11-22", "created": "2026-11-18", "memo": "" },
+    { "id": "read-zero-to-one", "title": "ゼロ・トゥ・ワンを読む", "created": "2026-10-28", "memo": "" },
+    {
+      "id": "record-songs",
+      "title": "歌声を10曲ぶん録音する",
+      "status": "done",
+      "created": "2026-11-03",
+      "done": "2026-11-10"
+    },
+    {
+      "id": "claude-certs",
+      "title": "Claude の資格を4つ取る",
+      "status": "done",
+      "created": "2026-09-20",
+      "done": "2026-10-28"
+    },
+    {
+      "id": "physics-ch1",
+      "title": "解析力学 1章を読んでノートにする",
+      "status": "done",
+      "created": "2026-11-05",
+      "done": "2026-11-18"
+    }
+  ],
+  "records": [
+    { "date": "2026-09-28", "text": "Claude の資格の勉強を始めた" },
+    { "date": "2026-10-05", "text": "Claude の資格 1つ目に合格" },
+    { "date": "2026-10-12", "text": "Claude の資格 2つ目に合格" },
+    { "date": "2026-10-16", "text": "細胞の免疫の仕組みを調べ始めた" },
+    { "date": "2026-10-26", "text": "Claude の資格 3つ目・4つ目に合格" },
+    { "date": "2026-10-27", "text": "物理の教科書を選んだ（解析力学から）" },
+    { "date": "2026-11-04", "text": "Cloudflare と OCI の基盤を作り終えた" },
+    { "date": "2026-11-08", "text": "大統一理論の候補（SU(5)、SO(10)）の概要を読んだ" },
+    { "date": "2026-11-11", "text": "細胞の機能（免疫、膜輸送、シグナル伝達）を洗い出した", "task": "cell-zero-trust" },
+    { "date": "2026-11-14", "text": "歌声変換の手法を3つ比べた", "task": "ai-karaoke-takase" },
+    { "date": "2026-11-19", "text": "todo アプリをローカルで触って、作り直す方針を決めた" }
+  ]
+}

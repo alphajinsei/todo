@@ -1,0 +1,120 @@
+{
+  "owner": {
+    "birthday": "1997-01-07",
+    "lifespanYears": 90
+  },
+  "rules": {
+    "wipLimit": 3
+  },
+  "tasks": [
+    {
+      "id": "next-cert",
+      "title": "次に取る資格を決める",
+      "type": "decision",
+      "status": "active",
+      "why": "Claude資格4つで一区切り。次の学習の軸を、流行りではなく自分の業務と関心から決めたい",
+      "output": "ブログ記事「次の資格をこう選んだ」（候補3つの比較と結論）",
+      "nextAction": "候補を3つ挙げ、出題範囲と市場での需要を表にする（30分）",
+      "deadline": "2026-11-08",
+      "deadlineHistory": [],
+      "created": "2026-11-01",
+      "activated": "2026-11-01",
+      "lastProgress": "2026-11-01",
+      "progressLog": []
+    },
+    {
+      "id": "todo-site",
+      "title": "このtodoサイトを作って公開する",
+      "type": "project",
+      "status": "active",
+      "why": "行動原理を本能の外に置くための「法典」。これが動かないと他も動かない",
+      "output": "todo.alphajinsei.com を公開する",
+      "nextAction": "ローカルのデモを触って、使いにくい点を3つ挙げる",
+      "deadline": "2026-11-08",
+      "deadlineHistory": [],
+      "created": "2026-11-01",
+      "activated": "2026-11-01",
+      "lastProgress": "2026-11-01",
+      "progressLog": []
+    },
+    {
+      "id": "semiconductor-war",
+      "title": "半導体戦争を読む",
+      "type": "book",
+      "status": "active",
+      "why": "半導体はAI・地政学・株の交点。半導体物性をやった人間として、産業と国家の側から構造を理解したい",
+      "output": "ブログに読書メモ（要点3つ＋自分の考察）",
+      "nextAction": "序章〜第1部を読む",
+      "deadline": "2026-11-15",
+      "deadlineHistory": [],
+      "created": "2026-11-01",
+      "activated": "2026-11-01",
+      "lastProgress": "2026-11-01",
+      "progressLog": []
+    },
+    {
+      "id": "technological-republic",
+      "title": "テクノロジカル・リパブリックをもう一度読む",
+      "type": "book",
+      "status": "inbox",
+      "memo": "",
+      "created": "2026-11-01"
+    },
+    {
+      "id": "zero-to-one",
+      "title": "ピーター・ティールのゼロ・トゥ・ワンを読む",
+      "type": "book",
+      "status": "inbox",
+      "memo": "",
+      "created": "2026-11-01"
+    },
+    {
+      "id": "deep-learning-6",
+      "title": "ゼロから作るDeep Learning 6を読む",
+      "type": "book",
+      "status": "inbox",
+      "memo": "",
+      "created": "2026-11-01"
+    },
+    {
+      "id": "blog-site",
+      "title": "自分のブログサイトを自作する",
+      "type": "project",
+      "status": "inbox",
+      "memo": "スクラップ的な「着想メモ」タグで日々のインプットを残す場所にしたい",
+      "created": "2026-11-01"
+    },
+    {
+      "id": "auto-trading",
+      "title": "株（ETF）の自動売買ツールを作る",
+      "type": "project",
+      "status": "inbox",
+      "memo": "ETFなら社内規程上OKと確認済み。昇格時に1週間で終わる単位に分割する",
+      "created": "2026-11-01"
+    },
+    {
+      "id": "ontology-auth",
+      "title": "オントロジー・認証について勉強する",
+      "type": "study",
+      "status": "inbox",
+      "memo": "",
+      "created": "2026-11-01"
+    },
+    {
+      "id": "game",
+      "title": "ゲームを作る（遊び方をコミュニティに委ねるタイプ）",
+      "type": "project",
+      "status": "inbox",
+      "memo": "大きすぎるので、最初は「アイデアを10個出して1つに絞る」タスクに分割する",
+      "created": "2026-11-01"
+    },
+    {
+      "id": "useful-service",
+      "title": "世の中の役に立つサービスを作る",
+      "type": "project",
+      "status": "inbox",
+      "memo": "自分で売上を立てる経験をしたい。最初は「アイデアを10個出して1つに絞る」タスクに分割する",
+      "created": "2026-11-01"
+    }
+  ]
+}

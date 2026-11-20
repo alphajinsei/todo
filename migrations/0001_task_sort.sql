@@ -1,0 +1,1 @@
+ALTER TABLE `tasks` ADD `sort` integer DEFAULT 0 NOT NULL;

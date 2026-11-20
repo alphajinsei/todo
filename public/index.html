@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>todo</title>
+  <meta name="description" content="alphajinsei の todo と、毎週やったことの記録。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏳</text></svg>">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="site-head">
+      <h1>todo<span class="dim">.alphajinsei.com</span></h1>
+      <p class="motto">やることと、やったこと。</p>
+    </header>
+
+    <section id="time" class="time" aria-label="残り時間"></section>
+
+    <form id="quick-add" class="quick-add" hidden autocomplete="off">
+      <input name="title" placeholder="タスクを追加（Enter）" aria-label="タスク">
+      <input name="deadline" type="date" aria-label="期限（任意）" title="期限（任意）">
+      <button class="btn">追加</button>
+    </form>
+
+    <section aria-labelledby="h-tasks">
+      <h2 id="h-tasks" class="sec-title"><span>タスク <span id="task-count" class="count"></span></span><span id="memo-all"></span></h2>
+      <ul id="tasks" class="tasks"></ul>
+      <details class="done-box">
+        <summary class="sec-title">完了 <span id="done-count" class="count"></span></summary>
+        <ul id="done" class="tasks"></ul>
+      </details>
+    </section>
+
+    <section id="week" aria-labelledby="week-title">
+      <h2 id="week-title" class="sec-title"></h2>
+      <ul id="week-list" class="recs"></ul>
+      <form id="week-add" class="week-add" hidden autocomplete="off">
+        <input name="text" placeholder="やったことを書き足す（Enter）" aria-label="やったこと">
+        <input name="date" type="date" aria-label="日付">
+        <button class="btn">追加</button>
+      </form>
+    </section>
+
+    <section aria-labelledby="h-life">
+      <h2 id="h-life" class="sec-title">人生の週</h2>
+      <p class="sec-note">1マス＝1週間（月曜〜日曜）、1行＝1歳（52マス。53週ある歳は最後のマスに2週ぶんをまとめる）。マスを押すと、その週にやったことが上に出る。</p>
+      <div id="life" class="life"></div>
+      <ul class="legend">
+        <li><i class="cell lived"></i>過ぎた週</li>
+        <li><i class="cell now"></i>今週</li>
+        <li><i class="cell lived done"></i>やったことがある週</li>
+        <li><i class="cell due"></i>期限がある週</li>
+      </ul>
+    </section>
+
+    <footer id="mode" class="site-foot"></footer>
+  </div>
+
+  <dialog id="dlg"></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <script src="/app.js"></script>
+</body>
+</html>

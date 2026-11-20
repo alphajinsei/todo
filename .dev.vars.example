@@ -1,0 +1,3 @@
+# 手元の開発用。cp .dev.vars.example .dev.vars で使う（.dev.vars は git に入れない）
+# wrangler dev には Access がいないので、JWT の検証を飛ばす。本番には絶対に設定しない
+DEV_SKIP_ACCESS=true
