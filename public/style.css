@@ -13,16 +13,16 @@
   --hot-bg: #fcebea;
   --over-ink: #ffffff;
   --cell: #e6e3dc;
-  --cell-lived: #a9a397; /* 過ぎた週。真っ黒にはせず、でも過ぎたことは分かる濃さ */
-  --cell-done: #3d5172;
-  /* やったことの量（週あたり 1件／2件／3〜4件／5件以上）。GitHub の草と同じく、多いほど濃い。
-     色は藍：差し色の紺と同じ系統で、緊急を煽らない（赤・橙はタスクの期限だけに使う）。
-     1段目は過ぎた週の灰色から一歩だけ藍に寄せ、灰色 → 藍が1本のグラデーションになるようにする */
-  --done-1: #808489;
-  --done-2: #5d697d;
-  --done-3: #3d5172;
-  --done-4: #1f3a68;
-  --done-bg: #e3e7ee;
+  --cell-lived: #d2cbbe; /* 過ぎた週：薄い灰色で塗る（中身の入った器） */
+  --cell-future: #d9d4ca; /* まだ来ていない週：塗らずに枠線だけ（空っぽの器） */
+  --cell-done: #e9862b;
+  /* やったことの量（週あたり 1件／2件／3〜4件／5件以上）。GitHub の草のように多いほど強く。
+     暗くするのではなく鮮やかにしていく（黒っぽくしない）。1件でもはっきりオレンジと分かる色から始める */
+  --done-1: #f4c58f;
+  --done-2: #efa75b;
+  --done-3: #e9862b;
+  --done-4: #e0680c;
+  --done-bg: #fcefdf;
   --radius: 12px;
   color-scheme: light;
 }
@@ -42,13 +42,14 @@
     --hot-bg: #3a1917;
     --over-ink: #1a0b0a;
     --cell: #2c2b27;
-    --cell-lived: #57534c;
-    --cell-done: #8ba2c4;
-    --done-1: #6b717a;
-    --done-2: #7c8ba1;
-    --done-3: #8ba2c4;
-    --done-4: #9ab8e6;
-    --done-bg: #232a36;
+    --cell-lived: #4a4741;
+    --cell-future: #3a3832;
+    --cell-done: #d98a35;
+    --done-1: #7a5530;
+    --done-2: #a8692b;
+    --done-3: #d98a35;
+    --done-4: #f7a640;
+    --done-bg: #33260f;
     color-scheme: dark;
   }
 }
@@ -67,13 +68,14 @@
   --hot-bg: #3a1917;
   --over-ink: #1a0b0a;
   --cell: #2c2b27;
-  --cell-lived: #57534c;
-  --cell-done: #8ba2c4;
-  --done-1: #6b717a;
-  --done-2: #7c8ba1;
-  --done-3: #8ba2c4;
-  --done-4: #9ab8e6;
-  --done-bg: #232a36;
+  --cell-lived: #4a4741;
+  --cell-future: #3a3832;
+  --cell-done: #d98a35;
+  --done-1: #7a5530;
+  --done-2: #a8692b;
+  --done-3: #d98a35;
+  --done-4: #f7a640;
+  --done-bg: #33260f;
   color-scheme: dark;
 }
 
@@ -235,8 +237,9 @@ section { margin-top: 28px; }
 /* life grid */
 .life svg { display: block; width: 100%; height: auto; }
 .life text { font-size: 11px; fill: var(--ink-3); }
-.life rect { fill: var(--cell); }
-.life rect.lived { fill: var(--cell-lived); }
+/* まだ来ていない週は塗らずに枠線だけ。過ぎた週（今週を含む）は塗る。色の付いた一番右のマスが今週 */
+.life rect { fill: transparent; stroke: var(--cell-future); stroke-width: 1; }
+.life rect.lived { fill: var(--cell-lived); stroke: none; }
 .life rect.d1 { fill: var(--done-1); }
 .life rect.d2 { fill: var(--done-2); }
 .life rect.d3 { fill: var(--done-3); }
@@ -247,12 +250,12 @@ section { margin-top: 28px; }
 .life rect.sel { stroke: var(--ink); stroke-width: 2; }
 .legend { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 16px; padding: 0; margin: 10px 0 0; font-size: 12px; color: var(--ink-3); }
 .legend li { display: flex; align-items: center; gap: 6px; }
-.cell { display: block; width: 10px; height: 10px; border-radius: 1.5px; background: var(--cell); }
-.cell.lived { background: var(--cell-lived); }
-.cell.d1 { background: var(--done-1); }
-.cell.d2 { background: var(--done-2); }
-.cell.d3 { background: var(--done-3); }
-.cell.d4 { background: var(--done-4); }
+.cell { display: block; width: 10px; height: 10px; border-radius: 1.5px; box-shadow: inset 0 0 0 1px var(--cell-future); }
+.cell.lived { background: var(--cell-lived); box-shadow: none; }
+.cell.d1 { background: var(--done-1); box-shadow: none; }
+.cell.d2 { background: var(--done-2); box-shadow: none; }
+.cell.d3 { background: var(--done-3); box-shadow: none; }
+.cell.d4 { background: var(--done-4); box-shadow: none; }
 .cell.sel { box-shadow: inset 0 0 0 2px var(--ink); }
 .legend .scale { display: flex; gap: 2px; }
 
