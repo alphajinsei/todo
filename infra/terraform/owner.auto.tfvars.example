@@ -1,2 +1,2 @@
 # cp owner.auto.tfvars.example owner.auto.tfvars して書き換える（owner.auto.tfvars は git に入れない）
-owner_email = "you@example.com"
+owner_emails = ["you@example.com", "you@your-domain.example"]

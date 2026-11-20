@@ -81,7 +81,7 @@ Access（Terraform）は別の操作：
 
 ```bash
 cd infra/terraform
-cp owner.auto.tfvars.example owner.auto.tfvars   # 初回だけ。自分のメールアドレスを書く
+cp owner.auto.tfvars.example owner.auto.tfvars   # 初回だけ。編集を許す自分のメールアドレス（複数可）を書く
 ./tf.sh init      # 初回だけ
 ./tf.sh apply     # 効くまで数分かかる
 ./tf.sh output access_aud

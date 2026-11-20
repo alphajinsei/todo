@@ -3,8 +3,9 @@ provider "cloudflare" {
 }
 
 # 公開リポジトリなので、メールアドレスはファイルに書かず owner.auto.tfvars（git 管理外）で渡す
-variable "owner_email" {
-  type        = string
+# 本人のアドレスを複数持てる（例：いつものメールと、自前のメール基盤のアドレス）。どれか1つでログインできれば通す
+variable "owner_emails" {
+  type        = list(string)
   description = "編集を許すメールアドレス（Access のログインに使う）"
 }
 
@@ -13,14 +14,12 @@ locals {
   hostname   = "todo.alphajinsei.com"
 }
 
-# 誰を通すか：自分のメールアドレスだけ
+# 誰を通すか：本人のメールアドレスだけ（include はどれか1つに当てはまれば通す）
 resource "cloudflare_zero_trust_access_policy" "owner_only" {
   account_id = local.account_id
   name       = "todo: owner only"
   decision   = "allow"
-  include = [{
-    email = { email = var.owner_email }
-  }]
+  include    = [for e in var.owner_emails : { email = { email = e } }]
 }
 
 # どこを守るか：/admin 以下（編集画面 /admin と、書き込みの API /admin/api/*）
