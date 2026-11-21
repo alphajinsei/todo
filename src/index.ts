@@ -88,18 +88,25 @@ admin.delete('/tasks/:id', async (c) => {
 	return c.json(await loadDoc(c.env));
 });
 
-// 完了。その日の記録に1行入る
+// 完了。既定ではその日の記録に1行入る。{ record: false } なら記録しない（続きを片付けただけのときなど）
 admin.post('/tasks/:id/done', async (c) => {
 	const id = c.req.param('id');
+	const b = await readBody(c);
+	if ('record' in b && typeof b.record !== 'boolean') throw new RuleError('「記録する」が真偽値ではありません');
+	const record = b.record !== false;
 	const t = today(c.env.TIME_ZONE);
 	const DB = c.env.DB;
 	const [upd] = await DB.batch([
 		DB.prepare(`UPDATE tasks SET status = 'done', done = ?2 WHERE id = ?1 AND status = 'open'`).bind(id, t),
-		DB.prepare(
-			`INSERT INTO records (date, text, kind, task_id, created)
-			 SELECT ?2, title, 'done', id, ?2 FROM tasks WHERE id = ?1 AND status = 'done' AND done = ?2
-			   AND NOT EXISTS (SELECT 1 FROM records WHERE task_id = ?1 AND kind = 'done' AND date = ?2)`,
-		).bind(id, t),
+		...(record
+			? [
+					DB.prepare(
+						`INSERT INTO records (date, text, kind, task_id, created)
+						 SELECT ?2, title, 'done', id, ?2 FROM tasks WHERE id = ?1 AND status = 'done' AND done = ?2
+						   AND NOT EXISTS (SELECT 1 FROM records WHERE task_id = ?1 AND kind = 'done' AND date = ?2)`,
+					).bind(id, t),
+				]
+			: []),
 	]);
 	if (!upd.meta.changes) await notFoundOr(c, id, 'もう完了しています');
 	return c.json(await loadDoc(c.env));

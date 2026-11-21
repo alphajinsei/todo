@@ -299,7 +299,10 @@ function openForm({ title, intro, fields, submit, onSubmit, danger }) {
   const dlg = $('#dlg');
   dlg.innerHTML = `<form class="form" novalidate>
     <h2>${esc(title)}</h2>${intro ? `<p class="intro">${intro}</p>` : ''}
-    ${fields.map((f) => `<div class="field"><label for="f-${f.name}">${esc(f.label)}</label>
+    ${fields.map((f) => f.type === 'checkbox'
+      ? `<div class="field check"><label><input type="checkbox" name="${f.name}"${f.checked ? ' checked' : ''}> ${esc(f.label)}</label>
+        ${f.hint ? `<div class="hint">${esc(f.hint)}</div>` : ''}</div>`
+      : `<div class="field"><label for="f-${f.name}">${esc(f.label)}</label>
       ${f.type === 'textarea'
         ? `<textarea name="${f.name}" id="f-${f.name}" rows="${f.rows || 3}">${esc(f.value)}</textarea>`
         : `<input type="${f.type || 'text'}" name="${f.name}" id="f-${f.name}" value="${esc(f.value)}" ${f.min ? `min="${f.min}"` : ''} ${f.max ? `max="${f.max}"` : ''}>`}
@@ -347,15 +350,20 @@ const actions = {
   },
   done(id) {
     const t = findTask(id);
+    // 既定は記録する。続きを片付けただけで、もう一度「やったこと」に入れるほどでもないときは外す
     openForm({
       title: '完了にしますか？',
-      intro: `「${esc(t.title)}」<br>完了にすると、今週の「やったこと」に記録され、タスクは下の「完了」に移ります（あとから戻せます）。`,
-      fields: [],
+      intro: `「${esc(t.title)}」<br>タスクは下の「完了」に移ります（あとから戻せます）。`,
+      fields: [{ name: 'record', type: 'checkbox', label: '今日の「やったこと」に記録する', checked: true }],
       submit: '完了にする',
-      onSubmit: () => {
-        state.week = mondayOf(today()); // 記録が入った今週を見せる
-        state.flash = id;
-        return send('POST', `/tasks/${id}/done`, {}, `「${t.title}」を完了にしました。今週のやったことに入りました`);
+      onSubmit: (v) => {
+        const record = v.record === 'on';
+        if (record) {
+          state.week = mondayOf(today()); // 記録が入った今週を見せる
+          state.flash = id;
+        }
+        return send('POST', `/tasks/${id}/done`, { record },
+          record ? `「${t.title}」を完了にしました。今週のやったことに入りました` : `「${t.title}」を完了にしました（やったことには記録していません）`);
       },
     });
   },
