@@ -359,7 +359,7 @@ const actions = {
       },
     });
   },
-  reopen(id) { sendNow('POST', `/tasks/${id}/reopen`, {}, '未完了に戻しました（記録からも消えました）'); },
+  reopen(id) { sendNow('POST', `/tasks/${id}/reopen`, {}, '未完了に戻しました（やったことの記録は残っています）'); },
   edit(id) {
     const t = findTask(id);
     openForm({

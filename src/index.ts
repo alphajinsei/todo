@@ -98,22 +98,19 @@ admin.post('/tasks/:id/done', async (c) => {
 		DB.prepare(
 			`INSERT INTO records (date, text, kind, task_id, created)
 			 SELECT ?2, title, 'done', id, ?2 FROM tasks WHERE id = ?1 AND status = 'done' AND done = ?2
-			   AND NOT EXISTS (SELECT 1 FROM records WHERE task_id = ?1 AND kind = 'done')`,
+			   AND NOT EXISTS (SELECT 1 FROM records WHERE task_id = ?1 AND kind = 'done' AND date = ?2)`,
 		).bind(id, t),
 	]);
 	if (!upd.meta.changes) await notFoundOr(c, id, 'もう完了しています');
 	return c.json(await loadDoc(c.env));
 });
 
-// 完了の取り消し。自動で入った記録も消す（手で書いた記録は残す）
+// 未完了に戻す。完了で入った記録は消さない（その日に完了したことは事実として残す。押し間違いなら週の欄から消す）。
+// もう一度完了すると、その日の記録がまた入る（同じ日に完了し直したときは、同じ行を重ねない）
 admin.post('/tasks/:id/reopen', async (c) => {
 	const id = c.req.param('id');
-	const DB = c.env.DB;
-	const [upd] = await DB.batch([
-		DB.prepare(`UPDATE tasks SET status = 'open', done = NULL WHERE id = ?1 AND status = 'done'`).bind(id),
-		DB.prepare(`DELETE FROM records WHERE task_id = ?1 AND kind = 'done' AND (SELECT status FROM tasks WHERE id = ?1) = 'open'`).bind(id),
-	]);
-	if (!upd.meta.changes) await notFoundOr(c, id, 'まだ完了していません');
+	const r = await drizzle(c.env.DB).update(tasks).set({ status: 'open', done: null }).where(and(eq(tasks.id, id), eq(tasks.status, 'done'))).returning({ id: tasks.id });
+	if (!r.length) await notFoundOr(c, id, 'まだ完了していません');
 	return c.json(await loadDoc(c.env));
 });
 
