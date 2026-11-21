@@ -367,7 +367,17 @@ const actions = {
       },
     });
   },
-  reopen(id) { sendNow('POST', `/tasks/${id}/reopen`, {}, '未完了に戻しました（やったことの記録は残っています）'); },
+  // 完了と対になるように、戻すときも確認する
+  reopen(id) {
+    const t = findTask(id);
+    openForm({
+      title: '未完了に戻しますか？',
+      intro: `「${esc(t.title)}」`,
+      fields: [],
+      submit: '未完了に戻す',
+      onSubmit: () => send('POST', `/tasks/${id}/reopen`, {}, `「${t.title}」を未完了に戻しました`),
+    });
+  },
   edit(id) {
     const t = findTask(id);
     openForm({
