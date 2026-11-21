@@ -353,7 +353,7 @@ const actions = {
     // 既定は記録する。続きを片付けただけで、もう一度「やったこと」に入れるほどでもないときは外す
     openForm({
       title: '完了にしますか？',
-      intro: `「${esc(t.title)}」<br>タスクは下の「完了」に移ります（あとから戻せます）。`,
+      intro: `「${esc(t.title)}」`,
       fields: [{ name: 'record', type: 'checkbox', label: '今日の「やったこと」に記録する', checked: true }],
       submit: '完了にする',
       onSubmit: (v) => {
@@ -382,7 +382,6 @@ const actions = {
     const t = findTask(id);
     openForm({
       title: 'タスクを編集',
-      intro: 'メモはタスクの「メモ」から書きます。',
       fields: [
         { name: 'title', label: 'タイトル', value: t.title },
         { name: 'deadline', label: '期限（空にすると期限なし）', type: 'date', value: t.deadline || '' },
@@ -391,7 +390,7 @@ const actions = {
       onSubmit: (v) => send('PATCH', `/tasks/${id}`, v),
       danger: {
         label: '削除',
-        confirm: `「${t.title}」を削除しますか？（やったことの記録は残ります）`,
+        confirm: `「${t.title}」を削除しますか？`,
         onClick: () => send('DELETE', `/tasks/${id}`, undefined, '削除しました'),
       },
     });
@@ -401,7 +400,7 @@ const actions = {
     const t = findTask(id);
     openForm({
       title: 'やったことに書く',
-      intro: `「${esc(t.title)}」で進めたことを書きます。完了にはせず、タスクはそのまま残ります。`,
+      intro: `「${esc(t.title)}」`,
       fields: [
         { name: 'text', label: 'やったこと', type: 'textarea', rows: 2, value: '' },
         { name: 'date', label: '日付', type: 'date', value: today(), max: today() },
