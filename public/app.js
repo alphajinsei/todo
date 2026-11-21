@@ -84,6 +84,7 @@ function render() {
   renderTime();
   renderTasks();
   renderWeek();
+  renderDays();
   renderLife();
   $('#quick-add').hidden = !state.editable;
   $('#mode').innerHTML = state.editable
@@ -251,6 +252,51 @@ function renderWeek() {
     form.elements.date.max = max;
     if (!form.elements.date.value || form.elements.date.value < start || form.elements.date.value > max) form.elements.date.value = max;
   }
+}
+
+// 日ごとのやったこと（直近の半年。GitHub の草と同じ並び：1列＝1週（月曜始まり）、1行＝曜日、1マス＝1日）。
+// 人生の週は1週間で上限の色に届いてしまうので、短い目で「今日も1マス塗った」が見えるようにする
+const DAY_WEEKS = 26;
+function renderDays() {
+  const t = today();
+  const thisWeek = mondayOf(t);
+  const first = addDays(thisWeek, -(DAY_WEEKS - 1) * 7);
+  const recAt = new Map();
+  for (const r of state.doc.records) recAt.set(r.date, [...(recAt.get(r.date) || []), r.text]);
+
+  const CELL = 11, GAP = 3, STEP = CELL + GAP, LABEL = 18, TOP = 16;
+  let svg = '', total = 0;
+  [['月', 0], ['水', 2], ['金', 4]].forEach(([w, i]) => { svg += `<text x="0" y="${TOP + i * STEP + CELL - 2}">${w}</text>`; });
+  for (let c = 0; c < DAY_WEEKS; c++) {
+    const monday = addDays(first, c * 7);
+    const x = LABEL + c * STEP;
+    // 月の見出しは、その月の1日を含む列に出す。いちばん左の列は、次の見出しと重ならないとき（3列以上あく）だけ出す
+    const hasFirst = (k) => [...Array(7)].some((_, i) => addDays(first, k * 7 + i).endsWith('-01'));
+    if (hasFirst(c) || (c === 0 && !hasFirst(1) && !hasFirst(2))) {
+      const day1 = [...Array(7)].map((_, i) => addDays(monday, i)).find((d) => d.endsWith('-01')) || monday;
+      svg += `<text x="${x}" y="${TOP - 5}">${+day1.split('-')[1]}月</text>`;
+    }
+    for (let i = 0; i < 7; i++) {
+      const d = addDays(monday, i);
+      if (d > t) break; // まだ来ていない日は描かない
+      const recs = recAt.get(d) || [];
+      total += recs.length;
+      const cls = [];
+      if (recs.length) cls.push(`d${Math.min(recs.length, 4)}`); // 1件／2件／3件／4件以上
+      if (d === t) cls.push('today');
+      const tips = [`${fmtMDW(d)}　${recs.length}件`, ...recs.slice(0, 8).map((s) => `・${s}`), ...(recs.length > 8 ? [`ほか${recs.length - 8}件`] : [])];
+      svg += `<rect data-week="${monday}" x="${x}" y="${TOP + i * STEP}" width="${CELL}" height="${CELL}" rx="2" class="${cls.join(' ')}"><title>${esc(tips.join('\n'))}</title></rect>`;
+    }
+  }
+
+  // 今日まで何日続けて記録があるか（今日がまだなら、昨日までで数える）
+  let streak = 0;
+  for (let d = recAt.has(t) ? t : addDays(t, -1); recAt.has(d); d = addDays(d, -1)) streak++;
+  $('#days-count').textContent = `この半年で${total}件${streak ? `・${streak}日連続` : ''}`;
+
+  const width = LABEL + DAY_WEEKS * STEP - GAP;
+  const height = TOP + 7 * STEP - GAP;
+  $('#days').innerHTML = `<svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="日ごとのやったこと">${svg}</svg>`;
 }
 
 function renderLife() {

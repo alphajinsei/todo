@@ -234,6 +234,16 @@ section { margin-top: 28px; }
 .rec-text { flex: 1; min-width: 10em; }
 .rec-task { font-size: 11px; color: var(--ink-3); border: 1px solid var(--line); border-radius: 999px; padding: 0 7px; margin-left: 4px; white-space: nowrap; display: inline-block; max-width: 16em; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }
 
+/* days grid（日ごと）。マスの大きさは固定にして、狭い画面では縮める */
+.days svg { display: block; max-width: 100%; height: auto; }
+.days text { font-size: 10px; fill: var(--ink-3); }
+.days rect { fill: var(--cell); cursor: pointer; } /* 何もない日は薄い灰色（GitHub の草と同じ。1件の薄いオレンジが埋もれないように） */
+.days rect.d1 { fill: var(--done-1); }
+.days rect.d2 { fill: var(--done-2); }
+.days rect.d3 { fill: var(--done-3); }
+.days rect.d4 { fill: var(--done-4); }
+.days rect.today { stroke: var(--ink); stroke-width: 1.5; }
+
 /* life grid */
 .life svg { display: block; width: 100%; height: auto; }
 .life text { font-size: 11px; fill: var(--ink-3); }
