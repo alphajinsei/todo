@@ -142,14 +142,9 @@ function renderTasks() {
   const done = state.doc.tasks.filter((t) => t.status === 'done').sort((a, b) => b.done.localeCompare(a.done));
   $('#done-count').textContent = done.length;
   $('#done').innerHTML = done.length
-    ? done.map((t) => `<li class="task is-done">
-        <div class="task-line">
-          <span class="done-mark" aria-hidden="true">✓</span>
-          <span class="task-title">${esc(t.title)}</span>
-          <span class="when">${fmtMD(t.done)} 完了</span>
-          ${state.editable ? `<span class="task-ops"><button class="btn sm" data-act="reopen" data-id="${t.id}">未完了に戻す</button></span>` : ''}
-        </div></li>`).join('')
+    ? done.map(doneRow).join('')
     : '<li class="empty">まだありません。</li>';
+  document.querySelectorAll('#done textarea[data-memo]').forEach(autosize);
 
   const urgent = open.filter((t) => t.deadline && dueInfo(t.deadline).left <= 0).length;
   document.title = urgent ? `(${urgent}) todo` : 'todo';
@@ -160,11 +155,7 @@ function taskRow(t) {
   const d = t.deadline ? dueInfo(t.deadline) : null;
   const isOpen = state.openMemos.has(t.id);
   const hasMemo = !!t.memo;
-  const memo = isOpen
-    ? `<div class="memo">${ed
-        ? `<textarea data-memo="${t.id}" rows="1" placeholder="メモ">${esc(t.memo)}</textarea><div class="memo-err" data-memo-status="${t.id}" hidden></div>`
-        : `<div class="memo-text">${esc(t.memo)}</div>`}</div>`
-    : '';
+  const memo = memoBlock(t);
   // メモはカードのどこを押しても開閉する（ボタンや入力欄を除く）。開閉は左の三角で、書き込みがあることはタイトルの右の
   // メモのアイコン（≡）で示す。閲覧モードでメモがないカードは開かない（三角は場所だけ空けて、タイトルの位置をそろえる）
   const openable = ed || hasMemo;
@@ -185,6 +176,33 @@ function taskRow(t) {
       </span>
     </div>
     ${memo}
+  </li>`;
+}
+
+// メモの欄（開いているときだけ）。編集モードなら打つそばから保存される textarea、閲覧モードなら文字だけ
+function memoBlock(t) {
+  if (!state.openMemos.has(t.id)) return '';
+  return `<div class="memo">${state.editable
+    ? `<textarea data-memo="${t.id}" rows="1" placeholder="メモ">${esc(t.memo)}</textarea><div class="memo-err" data-memo-status="${t.id}" hidden></div>`
+    : `<div class="memo-text">${esc(t.memo)}</div>`}</div>`;
+}
+
+// 完了したタスク。メモは未完了のときと同じように開いて読め、編集モードなら書き足せる（未完了に戻さなくてよい）
+function doneRow(t) {
+  const isOpen = state.openMemos.has(t.id);
+  const hasMemo = !!t.memo;
+  const openable = state.editable || hasMemo;
+  return `<li class="task is-done${openable ? ' openable' : ''}${isOpen ? ' open' : ''}" data-task="${t.id}">
+    <div class="task-line">
+      ${openable
+        ? `<button class="twisty" data-act="memo" data-id="${t.id}" aria-expanded="${isOpen}" aria-label="メモを${isOpen ? '閉じる' : '開く'}">▸</button>`
+        : '<span class="twisty" aria-hidden="true"></span>'}
+      <span class="done-mark" aria-hidden="true">✓</span>
+      <span class="task-title">${esc(t.title)}${hasMemo ? ` <span class="memo-icon" title="メモあり" aria-label="メモあり">${LINES}</span>` : ''}</span>
+      <span class="when">${fmtMD(t.done)} 完了</span>
+      ${state.editable ? `<span class="task-ops"><button class="btn sm" data-act="reopen" data-id="${t.id}">未完了に戻す</button></span>` : ''}
+    </div>
+    ${memoBlock(t)}
   </li>`;
 }
 
@@ -406,7 +424,7 @@ document.addEventListener('click', (e) => {
   const b = e.target.closest('[data-act]');
   if (b && actions[b.dataset.act]) { e.preventDefault(); actions[b.dataset.act](b.dataset.id); return; }
   // タスクのカードを押したらメモを開閉する。ボタン・つまみ・入力欄は除き、文字を選んでいるときも開閉しない
-  const card = e.target.closest('#tasks > .task.openable');
+  const card = e.target.closest('#tasks > .task.openable, #done > .task.openable');
   if (card && !e.target.closest('button, a, input, textarea, [data-grip], .memo') && !String(getSelection())) actions.memo(card.dataset.task);
 });
 
